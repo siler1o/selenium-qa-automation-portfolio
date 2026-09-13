@@ -4,10 +4,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class ProductPage:
-    ALL_PRODUCTS_HEADING = (
-        By.XPATH,
-        "//h2[normalize-space()='All Products']"
-    )
+    ALL_PRODUCTS_HEADING = (By.XPATH,"//h2[normalize-space()='All Products']")
+    ADD_CART = (By.CSS_SELECTOR, "button.btn.btn-default.cart")
+    CHANGE_QUANTITY = (By.ID, "quantity")
     LISTING_PRICE_ONE = (By.XPATH,"//div[contains(@class, 'productinfo')][.//a[@data-product-id='1']]//h2")
     LISTING_PRICE_TWO = (By.XPATH,"//div[contains(@class, 'productinfo')][.//a[@data-product-id='2']]//h2")
     PRODUCT_LIST = (By.CLASS_NAME, "productinfo")
@@ -195,6 +194,28 @@ class ProductPage:
         )
     )
 
-    
+    def quantity_change(self, quantity):
+        quantity_field = self.wait.until(
+            EC.visibility_of_element_located(
+                self.CHANGE_QUANTITY
+            )
+        )
+        quantity_field.clear()
+        quantity_field.send_keys(str(quantity))
+
+    def quantity_check(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(
+            self.CHANGE_QUANTITY
+        )
+    )
+
+    def add_cart(self):
+        cart_add = self.wait.until(
+            EC.element_to_be_clickable(
+                self.ADD_CART
+            )
+        )
+        cart_add.click()
 
 
