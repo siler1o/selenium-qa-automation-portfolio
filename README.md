@@ -1,5 +1,7 @@
 # Selenium QA Automation Portfolio
 
+[![Selenium CI/CD](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/workflows/selenium-ci.yml/badge.svg)](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/workflows/selenium-ci.yml)
+
 A personal UI automation project by **Reuben Silerio**, applying professional manual QA and test-design experience to **Python, Selenium WebDriver, Pytest, Page Object Model (POM), Allure, Git, and GitHub**.
 
 The project translates documented scenarios into automated checks against [Automation Exercise](https://automationexercise.com/), with a focus on repeatable execution, meaningful assertions, reusable page objects, explicit synchronization, and clear test evidence.
@@ -8,16 +10,16 @@ The project translates documented scenarios into automated checks against [Autom
 
 ## Current Snapshot
 
-Snapshot updated: **13 September 2026**.
+Snapshot updated: **14 September 2026**.
 
 - **13 automated scenarios out of 26 planned** — 50.0% of the planned scenario list, not application-wide coverage.
-- **Latest committed Allure snapshot: 12 total, 12 passed.** See the [report statistics](docs/widgets/statistic.json) and [scenario tree](docs/widgets/tree.json).
-- TC-013 product-quantity validation is implemented in source code but is not included in the current published Allure snapshot.
+- **Automated delivery:** GitHub Actions runs all 13 scenarios in headless Chrome on pushes and pull requests. A successful `main` run generates and deploys a fresh Allure report; failed runs cannot replace the published report.
+- **Test evidence:** Raw Allure results are retained as a workflow artifact for 14 days, including failed runs. See the [CI/CD workflow](.github/workflows/selenium-ci.yml), [workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions), and [live report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
 - Coverage includes registration, authentication, logout, duplicate-email validation, contact-form submission, navigation, product listing, product-detail validation, product search, subscriptions, multi-product cart validation, and product-quantity preservation.
 - All thirteen tests use the shared Chrome fixture. TC-002 through TC-013 include named Allure steps and metadata.
-- The latest report is published through GitHub Pages as a manually generated snapshot.
+- The public Allure report is deployed through GitHub Pages only after the complete CI suite passes on `main`.
 
-The documented local environment is Windows with Google Chrome, Python 3.11.4, Pytest 9.1.1, and allure-pytest 2.16.0; the report is built with Allure CLI 3.16.0. The result above is a snapshot of a local run, not a CI result, application-wide coverage measurement, or guarantee that future runs will pass.
+The documented local environment is Windows with Google Chrome, Python 3.11.4, Pytest 9.1.1, and allure-pytest 2.16.0. CI runs on Ubuntu with Python 3.11 and headless Google Chrome, while Allure CLI 3.16.0 builds the deployment artifact. Each report represents one completed run, not application-wide coverage or a guarantee that future runs will pass.
 
 ## Automated Scenarios
 
@@ -56,7 +58,7 @@ The documented local environment is Windows with Google Chrome, Python 3.11.4, P
 - Added a focused `HomePage` object and reused existing product and cart methods for TC-013.
 - Added input-value validation with `get_attribute("value")` and confirmed that a quantity of 4 is preserved after adding the selected product to the cart.
 - Reduced interference from unrelated third-party advertising by blocking known ad endpoints through Chrome DevTools Protocol in the shared fixture.
-- Generated an Allure 3 report and published the latest 12/12 passing result through GitHub Pages.
+- Added GitHub Actions CI/CD: automated dependency installation, headless-Chrome execution, Allure evidence retention, and gated GitHub Pages deployment after a passing `main` run.
 
 ## Project Organization
 
@@ -68,7 +70,8 @@ The documented local environment is Windows with Google Chrome, Python 3.11.4, P
 | [pages/contact_us.py](pages/contact_us.py) | Contact form fields, attachment upload, alert handling, success message, and home navigation. |
 | [pages/navigation_bar.py](pages/navigation_bar.py) | Reusable navigation to Products, Test Cases, and Cart. |
 | [pages/products_page.py](pages/products_page.py) | Product listing, product details, search, quantity input, Add to cart, and cart-validation interactions shared by TC-008, TC-009, TC-012, and TC-013. |
-| [conftest.py](conftest.py) | Shared Chrome setup, third-party ad-request blocking, and teardown after each test, including assertion failures. |
+| [conftest.py](conftest.py) | Shared Chrome setup, CI-only headless options, third-party ad-request blocking, and teardown after each test, including assertion failures. |
+| [.github/workflows/selenium-ci.yml](.github/workflows/selenium-ci.yml) | GitHub Actions CI/CD pipeline for test execution, Allure artifacts, and gated report deployment. |
 | [test_data/](test_data/) | Sample attachment used by TC-006. |
 | [requirements.txt](requirements.txt) | Python dependencies required by the project. |
 | [docs/](docs/) | Generated Allure report published through GitHub Pages. |
@@ -110,7 +113,7 @@ TC-010 and TC-011 use a dummy email to submit the subscription form and check it
 
 TC-012 expects a fresh browser session and adds products 1 and 2 once each. It captures their current listing prices during execution, then checks that the cart shows both product links, matching unit prices, quantity 1, and matching row totals.
 
-TC-013 opens product 1, replaces the quantity field with 4, captures the displayed product name, and verifies that the same name and quantity appear in the cart. Its test code is committed, while the published report remains the preceding 12/12 snapshot.
+TC-013 opens product 1, replaces the quantity field with 4, captures the displayed product name, and verifies that the same name and quantity appear in the cart.
 
 ## Run the Tests
 
@@ -140,7 +143,7 @@ Generate fresh raw results for the full suite:
 python -m pytest tests/ -v --alluredir=allure-results --clean-alluredir
 ~~~
 
-The Python integration records the result files; the separate Allure CLI builds the HTML report. The command above clears previous raw results in `allure-results/`, so archive any evidence you want to retain before running it.
+The Python integration records the result files; the separate Allure CLI builds the HTML report. The command above clears previous local results in `allure-results/`. CI stores its own raw-results artifact for 14 days.
 
 ### Generate and Preview an Allure 3 Report
 
@@ -172,39 +175,21 @@ allure.cmd open $qaReportSource
 
 Press Ctrl+C to stop the local preview server. This does not delete the results or report files. Keep the same PowerShell session for the next step.
 
-### Publish the Allure Report to GitHub Pages
+### Publish the Allure Report through CI/CD
 
-Allure can put its Awesome report inside an `awesome/` subfolder. Publish the contents of the actual report directory, not an older root report beside it.
+The [Selenium CI/CD workflow](.github/workflows/selenium-ci.yml) is the primary publishing path:
 
-Before replacing `docs/`, check `git status --short` and preserve any hand-written files or unpublished edits. This repository uses that folder for generated reports and its empty `.nojekyll` marker. The commands below move the previous copy to a temporary backup, then copy the verified report to the publishing root:
+1. A push or pull request targeting `main` starts the test job.
+2. GitHub installs Python 3.11 dependencies and runs the complete suite in headless Chrome.
+3. Raw `allure-results` are uploaded as a downloadable artifact for 14 days, even if a test fails.
+4. For a successful push to `main`, Allure CLI 3.16.0 generates and verifies the HTML report.
+5. GitHub Pages receives the report only after the test job passes.
 
-~~~powershell
-if (Test-Path ".\docs") {
-    $qaDocsBackup = Join-Path ([IO.Path]::GetTempPath()) ("qa-docs-backup-" + [guid]::NewGuid().ToString("N"))
-    Move-Item -LiteralPath ".\docs" -Destination $qaDocsBackup -ErrorAction Stop
-    Write-Host "Previous report backed up to: $qaDocsBackup"
-}
+Pull requests perform CI validation but never deploy. The workflow can also be started from the Actions tab with **Run workflow** on `main`.
 
-Copy-Item -LiteralPath $qaReportSource -Destination ".\docs" -Recurse -ErrorAction Stop
-New-Item ".\docs\.nojekyll" -ItemType File -Force | Out-Null
-Test-Path ".\docs\index.html"
-Get-Content ".\docs\widgets\statistic.json"
-~~~
+Repository administrators must select **Settings → Pages → Build and deployment → Source → GitHub Actions** once. After that one-time setting, report generation, validation, and publication require no manual `docs/` commit.
 
-Confirm that `index.html` exists and the totals still match. Inspect the replacement, then publish:
-
-~~~powershell
-git status --short
-git add -A docs
-git commit -m "docs: update published Allure report"
-git push origin main
-~~~
-
-These staging commands include only report files. When publishing new test code too, review and explicitly stage its test and page-object files before committing.
-
-GitHub Pages publishes from `main` → `/docs`. Test execution, report generation, and publication are separate steps; running tests alone does not refresh the public report. The reports shown here are local-run snapshots, and CI execution remains planned.
-
-[Open the published Allure report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
+[Open the workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions) · [Open the published Allure report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
 
 ### Optional pytest-html Summary
 
@@ -224,9 +209,8 @@ This is a personal practice project rather than production automation. Execution
 
 Planned improvements:
 
-- Add automatic screenshots and browser details to failed Allure results.
+- Add automatic screenshots and browser details to failed Allure and CI results.
 - Externalize practice-account data and formalize account setup and cleanup.
-- Add CI execution with automatic report generation and GitHub Pages deployment.
 - Add TC-014: place an order by registering during checkout.
 - Refresh the published Allure report after the next selected batch of passing scenarios.
 - Continue with checkout coverage from the 26-case roadmap.
