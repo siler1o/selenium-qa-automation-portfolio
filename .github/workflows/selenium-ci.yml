@@ -1,0 +1,110 @@
+name: Selenium CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: selenium-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Selenium tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Show browser version
+        run: google-chrome --version
+
+      - name: Run test suite
+        run: python -m pytest tests/ -v --alluredir=allure-results --clean-alluredir
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ github.run_id }}
+          path: allure-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+  deploy-report:
+    name: Publish Allure report
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-${{ github.run_id }}
+          path: allure-results
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Allure CLI
+        run: npm install --global allure@3.16.0
+
+      - name: Generate Allure report
+        run: allure generate allure-results --output allure-report
+
+      - name: Locate and verify generated report
+        id: report
+        shell: bash
+        run: |
+          report_dir="allure-report"
+          if [[ -f "allure-report/awesome/index.html" ]]; then
+            report_dir="allure-report/awesome"
+          fi
+
+          test -f "$report_dir/index.html"
+          test -f "$report_dir/widgets/statistic.json"
+          touch "$report_dir/.nojekyll"
+          echo "report_dir=$report_dir" >> "$GITHUB_OUTPUT"
+          cat "$report_dir/widgets/statistic.json"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.report.outputs.report_dir }}
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
