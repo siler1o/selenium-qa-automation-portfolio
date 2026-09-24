@@ -1,7 +1,5 @@
 from uuid import uuid4
-
 import allure
-
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
 from pages.registration_page import RegistrationPage

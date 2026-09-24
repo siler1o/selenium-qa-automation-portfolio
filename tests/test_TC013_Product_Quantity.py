@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from pages.login_page import LoginPage
 from pages.home_page import HomePage
 from pages.products_page import ProductPage
-import time
 
 @allure.feature("Shopping Cart")
 @allure.story("Update product quantity")

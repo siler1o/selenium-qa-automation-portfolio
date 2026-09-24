@@ -6,6 +6,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 class HomePage:
 
     VIEW_PRODUCT = (By.LINK_TEXT, "View Product")
+    FIRST_PRODUCT_NAME = (By.XPATH,"//div[contains(@class, 'productinfo')]/a[@data-product-id='1']/../p")
+    FIRST_PRODUCT_PRICE = (By.XPATH,"//div[contains(@class, 'productinfo')]/a[@data-product-id='1']/../h2")
 
     def __init__(self, driver):
         self.driver = driver
@@ -26,4 +28,13 @@ class HomePage:
         )
         view_product.click()
 
+    def first_product_name(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(self.FIRST_PRODUCT_NAME)
+    )
+
+    def first_product_price(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(self.FIRST_PRODUCT_PRICE)
+    )
     
