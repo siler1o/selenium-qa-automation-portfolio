@@ -1,76 +1,81 @@
-from selenium.webdriver.support.ui import Select
-import time
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from uuid import uuid4
 
-#TC-001 - Registration of USER 
+import allure
 
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
+from pages.registration_page import RegistrationPage
+
+
+@allure.feature("User Registration")
+@allure.story("Register a new user and delete the test account")
+@allure.title("TC-001 — Register User")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_register_user(driver):
-    test_email = f"reuben.qa.{uuid4().hex[:10]}@example.com"
+    home_page = HomePage(driver)
+    login_page = LoginPage(driver)
+    registration_page = RegistrationPage(driver)
 
-    driver.get("https://automationexercise.com")
+    signup_name = "Reuben QA tester"
+    test_email = f"reuben.qa.{uuid4().hex}@example.com"
+    address = {
+        "first_name": "Reuben",
+        "last_name": "Test",
+        "company": "QA Test Company",
+        "address1": "123 Test Street",
+        "address2": "Unit 4",
+        "country": "Singapore",
+        "state": "Singapore",
+        "city": "Singapore",
+        "zipcode": "123456",
+        "mobile_number": "12345678",
+    }
 
-    driver.find_element("link text", "Signup / Login").click()
+    with allure.step("Open the website and verify the homepage URL"):
+        login_page.goto()
+        assert home_page.verify_home()
 
-    time.sleep(2)
+    with allure.step("Open Signup / Login and verify the signup heading"):
+        login_page.click_signup_login()
+        heading = login_page.newuserverify()
+        assert heading.text.strip() == "New User Signup!"
 
-    assert "New User Signup!" in driver.page_source
-    driver.find_element("name", "name").send_keys("Reuben QA tester")
-    driver.find_element(
-    "css selector",
-    "input[data-qa='signup-email']").send_keys(test_email)
-    time.sleep(2)
-    driver.find_element("css selector", "button[data-qa='signup-button']").click()
-    time.sleep(2)
-    assert "Enter Account Information" in driver.page_source
-    driver.find_element("css selector", "label[for='id_gender1']").click()
-    driver.find_element("css selector", "input[data-qa='password']").send_keys("Password test")
-    #dob below / also change made it cleaner below.
-    #select is a class that is used to select dropdowns in selenium. you need to import it first from selenium.webdriver.support.ui import Select
-    daydropdown = Select(driver.find_element("id", "days"))
-    daydropdown.select_by_value("31")
-    monthdropdown = Select(driver.find_element("name", "months"))
-    monthdropdown.select_by_visible_text("July")
-    yeardropdown = Select(driver.find_element("css selector", "select[data-qa='years']"))
-    yeardropdown.select_by_value("2001")
-    #checkbox additional info i learned. "strategy" , "value" is the term
-    signupcheckbox1 = driver.find_element("name", "newsletter")
-    signupcheckbox1.click()
-    signupcheckbox2 = driver.find_element("id", "optin")
-    signupcheckbox2.click()
-    firstname = driver.find_element("css selector", "#first_name")
-    firstname.send_keys("Reuben the QA")
-    lastname = driver.find_element("id", "last_name")
-    lastname.send_keys("Test")
-    company = driver.find_element("css selector", "[data-qa='company']")
-    company.send_keys("Freelance Company")
-    address1 = driver.find_element("css selector","input[data-qa='address']")
-    address1.send_keys("philippines, test address, best company")
-    address2 = driver.find_element("name", "address2")
-    address2.send_keys("the test address part 2")
-    countrydropdown = Select(driver.find_element("id" , "country"))
-    countrydropdown.select_by_value("Singapore")
-    state = driver.find_element("css selector", "input[data-qa='state']")
-    state.send_keys("Test state philippines")
-    city = driver.find_element("id", "city")
-    city.send_keys("Manila city")
-    zipcode = driver.find_element("name", "zipcode")
-    zipcode.send_keys("1234")
-    mobnum = driver.find_element("css selector", "#mobile_number")
-    mobnum.send_keys("09711224400")
-    time.sleep(2) #timer to display
+    with allure.step("Sign up with a name and a unique email"):
+        login_page.insert_name(signup_name)
+        login_page.insert_email(test_email)
+        login_page.click_signup_wait()
 
-    createaccount = driver.find_element( "css selector", "button[data-qa='create-account']")
-    createaccount.click()   
+    with allure.step("Verify the account-information form"):
+        heading = registration_page.account_information_heading()
+        assert heading.text.strip().upper() == "ENTER ACCOUNT INFORMATION"
 
-    account_created_heading = WebDriverWait(driver, 10).until(
-    EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, "h2[data-qa='account-created']")))
+    with allure.step("Enter title, password, and date of birth"):
+        registration_page.select_title_mr()
+        registration_page.fill_account_information(
+            password="Password test", day="31", month="7", year="2001",
+        )
 
-    assert account_created_heading.is_displayed()
-    assert "ACCOUNT CREATED!" in account_created_heading.text.upper()
+    with allure.step("Select newsletter and special-offer preferences"):
+        registration_page.set_preferences(newsletter=True, special_offers=True)
 
+    with allure.step("Enter the address and contact information"):
+        registration_page.fill_address_information(**address)
 
+    with allure.step("Create the account and verify confirmation"):
+        registration_page.create_account()
+        heading = registration_page.account_created_heading()
+        assert heading.text.strip().upper() == "ACCOUNT CREATED!"
 
+    with allure.step("Continue and verify the registered user is signed in"):
+        registration_page.click_continue()
+        assert registration_page.logged_in_name().text.strip() == signup_name
+
+    with allure.step("Delete the account created by this test"):
+        registration_page.delete_account()
+        heading = registration_page.account_deleted_heading()
+        assert heading.text.strip().upper() == "ACCOUNT DELETED!"
+
+    with allure.step("Continue and verify the user is signed out"):
+        registration_page.click_continue()
+        assert home_page.verify_home()
+        assert login_page.logged_out_indicator().is_displayed()
