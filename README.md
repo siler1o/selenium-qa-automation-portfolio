@@ -144,6 +144,27 @@ Check test discovery without opening browsers:
 python -m pytest tests/ --collect-only -q
 ~~~
 
+### Publish the Allure Report through CI/CD
+
+The [Selenium CI/CD workflow](.github/workflows/selenium-ci.yml) is the primary publishing path:
+
+1. A push or pull request targeting `main` starts the test job.
+2. GitHub installs Python 3.11 dependencies and runs the complete suite in headless Chrome.
+3. Raw `allure-results` are uploaded as a downloadable artifact for 14 days, even if a test fails.
+4. For a successful push to `main`, Allure CLI 3.16.0 generates and verifies the HTML report.
+5. GitHub Pages receives the report only after the test job passes.
+
+Pull requests perform CI validation but never deploy. The workflow can also be started from the Actions tab with **Run workflow** on `main`.
+
+Repository administrators must select **Settings → Pages → Build and deployment → Source → GitHub Actions** once. After that one-time setting, report generation, validation, and publication require no manual `docs/` commit.
+
+[Open the workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions) · [Open the published Allure report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
+
+<details>
+<summary>Optional: preview reports locally</summary>
+
+Use this when investigating a local run before pushing. CI generates and publishes its own report automatically; these steps are not required for deployment. Install Allure CLI 3.16.0 separately to use the commands below.
+
 ### Generate Allure Results
 
 Generate fresh raw results for the full suite:
@@ -163,7 +184,7 @@ Run from the repository root in PowerShell. Generate into a fresh temporary fold
 ~~~powershell
 $qaReportBuild = Join-Path ([IO.Path]::GetTempPath()) ("qa-allure-" + [guid]::NewGuid().ToString("N"))
 allure.cmd generate ".\allure-results" -o $qaReportBuild
-if ($LASTEXITCODE -ne 0) { throw "Allure generation failed. Do not publish." }
+if ($LASTEXITCODE -ne 0) { throw "Allure generation failed." }
 
 $qaReportSource = $qaReportBuild
 if (Test-Path (Join-Path $qaReportBuild "awesome\index.html")) {
@@ -184,21 +205,7 @@ allure.cmd open $qaReportSource
 
 Press Ctrl+C to stop the local preview server. This does not delete the results or report files.
 
-### Publish the Allure Report through CI/CD
-
-The [Selenium CI/CD workflow](.github/workflows/selenium-ci.yml) is the primary publishing path:
-
-1. A push or pull request targeting `main` starts the test job.
-2. GitHub installs Python 3.11 dependencies and runs the complete suite in headless Chrome.
-3. Raw `allure-results` are uploaded as a downloadable artifact for 14 days, even if a test fails.
-4. For a successful push to `main`, Allure CLI 3.16.0 generates and verifies the HTML report.
-5. GitHub Pages receives the report only after the test job passes.
-
-Pull requests perform CI validation but never deploy. The workflow can also be started from the Actions tab with **Run workflow** on `main`.
-
-Repository administrators must select **Settings → Pages → Build and deployment → Source → GitHub Actions** once. After that one-time setting, report generation, validation, and publication require no manual `docs/` commit.
-
-[Open the workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions) · [Open the published Allure report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
+</details>
 
 ### Optional pytest-html Summary
 
@@ -214,19 +221,32 @@ The [Reuben Selenium Test Case Tracker](https://docs.google.com/spreadsheets/d/1
 
 ## Current Scope and Next Steps
 
-This is a personal practice project rather than production automation. Execution currently targets Chrome, and results depend on the availability, behavior, and test data of a public website. Third-party ad requests are blocked through Chrome-specific DevTools commands; this is a controlled test-environment choice, not coverage of the site's advertising behavior. Payment checks verify the practice site's UI confirmation, not real payment processing.
+### Implemented
 
-Planned improvements:
+- **TC-001 through TC-016:** 16 of the 26 planned scenarios are automated.
+- **Checkout journeys:** register during checkout (TC-014), register before checkout (TC-015), and log in before checkout (TC-016).
+- **Address validation:** delivery and billing sections are checked against submitted registration data. TC-014's delivery state and postcode checks remain to be added.
+- **Independent checkout accounts:** TC-014 through TC-016 use unique emails and delete their own accounts at the end of a successful flow. TC-016 creates an account during setup, logs out, and then exercises login before shopping.
+- **CI/CD and reporting:** GitHub Actions runs the suite in headless Chrome, retains Allure results, and deploys the report after successful main-branch runs. Manual report generation and report commits are optional, not part of the normal publishing workflow.
 
-- Add automatic screenshots and browser details to failed Allure and CI results.
-- Externalize practice-account data and ensure account cleanup also runs after failures.
-- Add checkout line-total and overall order-total assertions to TC-014 through TC-016.
-- Add TC-014 delivery state/postcode checks and strengthen address validation with field-specific assertions and distinct test values.
-- Implement TC-017: remove products from the cart, then continue the remaining 26-case roadmap.
-- Expand product search with no-match, empty-input, and other data variations.
-- Gradually standardize the earlier page objects while preserving the visible learning progression.
+### Next Scenario
 
-These are planned capabilities, not features already implemented.
+**TC-017 — Remove Products From Cart:** add a product, remove it from the cart, and verify that it is no longer listed. Continue TC-018 through TC-026 afterward.
+
+### Remaining Validation and Framework Improvements
+
+- Add checkout line-total and overall order-total assertions to TC-014 through TC-016. Existing TC-012 cart-total checks do not cover checkout totals.
+- Add delivery state and postcode assertions to TC-014, then strengthen address checks with field-specific comparisons and distinct city/state/country test values.
+- Ensure test-account cleanup runs after failures as well as successful flows.
+- Attach screenshots and browser details to failed Allure results.
+- Move reusable account and address data into shared test-data configuration.
+- Expand search coverage with empty searches, no-match results, and other data variations.
+
+These items remain pending; a passing test run validates the assertions currently implemented, not every planned tracker check.
+
+### Execution Scope
+
+The suite currently targets Chrome against a public practice website. Third-party ad requests are blocked through Chrome DevTools Protocol to reduce interference. Order tests verify the site's UI confirmation using dummy payment data; they do not validate real payment settlement. Browser teardown runs after tests, but an earlier failure can still leave a generated account behind.
 
 ## Acknowledgements
 
