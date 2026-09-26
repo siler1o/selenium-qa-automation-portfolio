@@ -122,7 +122,23 @@ def test_order_register_before_checkout(driver: WebDriver):
         assert address["zipcode"] in delivery_text
         assert address["country"] in delivery_text
         assert address["mobile_number"] in delivery_text
+    with allure.step("Verify the billing address"):
+        billing_address = products_page.billing_address()
+        billing_text = " ".join(billing_address.text.split())
 
+        expected_full_name = (
+            f"{address['first_name']} {address['last_name']}"
+        )
+
+        assert expected_full_name in billing_text
+        assert address["company"] in billing_text
+        assert address["address1"] in billing_text
+        assert address["address2"] in billing_text
+        assert address["city"] in billing_text
+        assert address["state"] in billing_text
+        assert address["zipcode"] in billing_text
+        assert address["country"] in billing_text
+        assert address["mobile_number"] in billing_text
     with allure.step("Verify the order review on the checkout page"):
         cart_name = products_page.product_one_details()
         cart_price = products_page.price_one()

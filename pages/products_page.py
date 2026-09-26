@@ -41,6 +41,7 @@ class ProductPage:
     CVC = (By.NAME, "cvc")
     EXPIRY_MONTH = (By.NAME, "expiry_month")
     EXPIRY_YEAR = (By.NAME, "expiry_year")
+    BILLING_ADDRESS = (By.CSS_SELECTOR, "#address_invoice")
 
     def __init__(self, driver):
      self.driver = driver
@@ -253,6 +254,13 @@ class ProductPage:
         EC.visibility_of_element_located(
             self.DELIVERY_ADDRESS)
          )
+    
+    def billing_address(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(
+            self.BILLING_ADDRESS
+        )
+    )
 
     def comment_order(self, comment):
         type_comment = self.wait.until(
