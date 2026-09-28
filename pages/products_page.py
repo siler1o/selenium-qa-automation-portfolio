@@ -43,7 +43,7 @@ class ProductPage:
     EXPIRY_YEAR = (By.NAME, "expiry_year")
     BILLING_ADDRESS = (By.CSS_SELECTOR, "#address_invoice")
     REMOVE_PRODUCT = (By.CSS_SELECTOR, ".cart_delete")
-    EMPTY_CART_MESSAGE = (By.XPATH,"//*[normalize-space(text())='Cart is empty!']")
+    REMOVE_PRODUCT = (By.CSS_SELECTOR,"#product-1 a.cart_quantity_delete")
 
     def __init__(self, driver):
      self.driver = driver
