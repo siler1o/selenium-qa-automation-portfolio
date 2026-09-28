@@ -6,18 +6,18 @@ A personal UI automation project by **Reuben Silerio**, applying professional ma
 
 The project translates documented scenarios into automated checks against [Automation Exercise](https://automationexercise.com/), with a focus on repeatable execution, meaningful assertions, reusable page objects, explicit synchronization, and clear test evidence.
 
-[View Live Allure Report](https://siler1o.github.io/selenium-qa-automation-portfolio/) · [Test Case Tracker](https://docs.google.com/spreadsheets/d/1E-rbgsHj4jv7pamglMdsREiQnfcl-aHWACqrRmAwD3w/edit?usp=drivesdk) · [Test Scripts](tests/) · [Latest Scenario: TC016](tests/test_TC016_Order_Login_Before_Checkout.py) · [About Reuben](https://github.com/siler1o)
+[View Live Allure Report](https://siler1o.github.io/selenium-qa-automation-portfolio/) · [Test Case Tracker](https://docs.google.com/spreadsheets/d/1E-rbgsHj4jv7pamglMdsREiQnfcl-aHWACqrRmAwD3w/edit?usp=drivesdk) · [Test Scripts](tests/) · [Latest Scenario: TC019](tests/test_TC019_View_Brand_Products.py) · [About Reuben](https://github.com/siler1o)
 
 ## Current Snapshot
 
-Snapshot updated: **26 September 2026**.
+Snapshot updated: **28 September 2026**.
 
-- **16 automated scenarios out of 26 planned** — 61.5% of the planned scenario list, not application-wide coverage.
-- **Verified CI snapshot:** [26 September 2026 run](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36233668616) — **16 passed in 76.02 seconds**, followed by successful Allure deployment, for commit `117447c`.
+- **19 automated scenarios out of 26 planned** — 73.1% of the planned scenario list, not application-wide coverage.
+- **Verified CI snapshot:** [28 September 2026 run](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36410035949) — **19 passed in 96.38 seconds**, followed by successful Allure deployment, for commit `9a7396c`.
 - **Automated delivery:** GitHub Actions runs the complete suite in headless Chrome on pushes and pull requests. A successful `main` run generates and deploys a fresh Allure report; failed runs cannot replace the published report.
 - **Test evidence:** Raw Allure results are retained as a workflow artifact for 14 days, including failed runs. See the [CI/CD workflow](.github/workflows/selenium-ci.yml), [workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions), and [live report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
-- Coverage includes registration, authentication, logout, duplicate-email validation, contact-form submission, navigation, product listing, product-detail validation, product search, subscriptions, multi-product cart validation, product-quantity preservation, and three order-placement journeys with delivery and billing address checks.
-- All sixteen tests use the shared Chrome fixture and include named Allure steps and metadata.
+- Coverage includes registration, authentication, logout, duplicate-email validation, contact-form submission, navigation, product listing, product-detail validation, product search, subscriptions, multi-product cart validation, product-quantity preservation, three order-placement journeys with delivery and billing address checks, cart-item removal, category navigation, and brand-product navigation.
+- All nineteen tests use the shared Chrome fixture and include named Allure steps and metadata.
 - The public Allure report is deployed through GitHub Pages only after the complete CI suite passes on `main`.
 
 The documented local environment is Windows with Google Chrome, Python 3.11.4, Pytest 9.1.1, and allure-pytest 2.16.0. CI runs on Ubuntu with Python 3.11 and headless Google Chrome, while Allure CLI 3.16.0 builds the deployment artifact. Each report represents one completed run, not application-wide coverage or a guarantee that future runs will pass.
@@ -42,6 +42,9 @@ The documented local environment is Windows with Google Chrome, Python 3.11.4, P
 | [TC-014](tests/test_TC014_Order_Register.py) | Register during checkout | Adds a product before registration, resumes checkout, checks delivery and billing address values and order-review name/price/quantity, submits dummy payment details, verifies Order Placed, and deletes its account. |
 | [TC-015](tests/test_TC015_Order_Register_Before_Checkout.py) | Register before checkout | Registers before shopping, verifies cart and order-review details and both address sections, places an order with dummy payment data, and deletes its account. |
 | [TC-016](tests/test_TC016_Order_Login_Before_Checkout.py) | Login before checkout | Creates a dedicated account during setup, logs out and back in, validates cart and order-review details and both addresses, places an order, then deletes only that account. |
+| [TC-017](tests/test_TC017_Remove_products.py) | Remove products from cart | Adds the first product, verifies its name, price, quantity and cart route, removes it, and confirms the empty-cart message. |
+| [TC-018](tests/test_TC018_View_category_products.py) | View category products | Verifies category controls, navigates Women → Tops and Men → Tshirts, validates headings and routes, and confirms products are displayed. |
+| [TC-019](tests/test_TC019_View_Brand_Products.py) | View brand products | Opens Products, verifies the Brands section, navigates Polo and H&M brand pages, validates headings and decoded routes, and confirms products are displayed. |
 
 **Coverage boundaries:** TC-014 through TC-016 verify product name, unit price, and quantity at checkout; checkout line-total and overall order-total assertions remain pending. TC-014's delivery-address check currently omits state and postcode; its billing check includes them. Address checks use normalized text containment rather than exact, field-by-field equality. A passing run covers the assertions implemented in code, not every planned tracker check.
 
@@ -92,7 +95,7 @@ Page objects handle locating and interacting with UI elements. Tests describe th
 
 TC-001 has been refactored into reusable page-object interactions with explicit waits, unique account data, Allure steps, and account deletion. The same registration methods now support the checkout scenarios.
 
-TC-002 onward demonstrate the transition toward reusable page objects, explicit waits, clearer assertions, and structured Allure reporting. TC-008 extends that progression with a dedicated product page object, collection handling, and multiple detail validations. TC-009 reuses that object for product search and checks each result against the search phrase. TC-010 adds scrolling to a footer section and distinguishes action methods from methods that return elements for assertions. TC-011 reuses that subscription flow on the Cart page. TC-012 adds multi-product cart interactions, parent-scoped selectors, dynamic price capture, and price, quantity, and total comparisons. TC-013 adds input-value replacement and verification, dynamic product-name capture, and quantity-preservation validation across pages. TC-014 through TC-016 extend this into order-placement journeys with registration at different stages, login setup, address checks, dummy payment entry, and order confirmation.
+TC-002 onward demonstrate the transition toward reusable page objects, explicit waits, clearer assertions, and structured Allure reporting. TC-008 extends that progression with a dedicated product page object, collection handling, and multiple detail validations. TC-009 reuses that object for product search and checks each result against the search phrase. TC-010 adds scrolling to a footer section and distinguishes action methods from methods that return elements for assertions. TC-011 reuses that subscription flow on the Cart page. TC-012 adds multi-product cart interactions, parent-scoped selectors, dynamic price capture, and price, quantity, and total comparisons. TC-013 adds input-value replacement and verification, dynamic product-name capture, and quantity-preservation validation across pages. TC-014 through TC-016 extend this into order-placement journeys with registration at different stages, login setup, address checks, dummy payment entry, and order confirmation. TC-017 adds cart-removal verification, TC-018 adds category navigation and product-collection checks, and TC-019 adds brand navigation with route normalization for encoded brand names.
 
 ## Setup
 
@@ -197,7 +200,7 @@ if (-not (Test-Path (Join-Path $qaReportSource "index.html"))) {
 Get-Content (Join-Path $qaReportSource "widgets\statistic.json") -ErrorAction Stop
 ~~~
 
-Compare the displayed totals with the actual Pytest run. The current suite contains 16 scenarios; confirm that all intended tests appear and review any failures before using the report as evidence:
+Compare the displayed totals with the actual Pytest run. The current suite contains 19 scenarios; confirm that all intended tests appear and review any failures before using the report as evidence:
 
 ~~~powershell
 allure.cmd open $qaReportSource
@@ -223,7 +226,7 @@ The [Reuben Selenium Test Case Tracker](https://docs.google.com/spreadsheets/d/1
 
 ### Implemented
 
-- **TC-001 through TC-016:** 16 of the 26 planned scenarios are automated.
+- **TC-001 through TC-019:** 19 of the 26 planned scenarios are automated.
 - **Checkout journeys:** register during checkout (TC-014), register before checkout (TC-015), and log in before checkout (TC-016).
 - **Address validation:** delivery and billing sections are checked against submitted registration data. TC-014's delivery state and postcode checks remain to be added.
 - **Independent checkout accounts:** TC-014 through TC-016 use unique emails and delete their own accounts at the end of a successful flow. TC-016 creates an account during setup, logs out, and then exercises login before shopping.
