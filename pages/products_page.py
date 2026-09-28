@@ -42,6 +42,8 @@ class ProductPage:
     EXPIRY_MONTH = (By.NAME, "expiry_month")
     EXPIRY_YEAR = (By.NAME, "expiry_year")
     BILLING_ADDRESS = (By.CSS_SELECTOR, "#address_invoice")
+    REMOVE_PRODUCT = (By.CSS_SELECTOR, ".cart_delete")
+    EMPTY_CART_MESSAGE = (By.XPATH,"//*[normalize-space(text())='Cart is empty!']")
 
     def __init__(self, driver):
      self.driver = driver
@@ -308,3 +310,16 @@ class ProductPage:
         EC.element_to_be_clickable(self.ORDER_CONTINUE)
     )
         continue_button.click()
+
+    def click_remove(self):
+        remove_order = self.wait.until(
+        EC.element_to_be_clickable(self.REMOVE_PRODUCT)
+    )
+        remove_order.click()
+
+    def empty_cart_message(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(
+            self.EMPTY_CART_MESSAGE
+        )
+    )
