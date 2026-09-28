@@ -1,5 +1,4 @@
 import allure
-from uuid import uuid4
 from selenium.webdriver.chrome.webdriver import WebDriver
 from pages.login_page import LoginPage
 from pages.home_page import HomePage
