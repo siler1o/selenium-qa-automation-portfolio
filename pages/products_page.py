@@ -45,7 +45,11 @@ class ProductPage:
     REMOVE_PRODUCT = (By.CSS_SELECTOR,"#product-1 a.cart_quantity_delete")
     EMPTY_CART_MESSAGE = (By.XPATH,"//*[normalize-space(text())='Cart is empty!']")
     CATEGORY_HEADING = (By.CSS_SELECTOR,".features_items > h2.title")
-
+    BRANDS_HEADING = (By.XPATH, "//h2[normalize-space()='Brands']")
+    POLO_BRAND = (By.CSS_SELECTOR, "a[href='/brand_products/Polo']")
+    HM_BRAND = (By.CSS_SELECTOR, "a[href='/brand_products/H&M']")
+    BRAND_HEADING = (By.CSS_SELECTOR, ".features_items > h2.title")
+    
     def __init__(self, driver):
      self.driver = driver
      self.wait = WebDriverWait(driver, 10)
@@ -329,3 +333,25 @@ class ProductPage:
         return self.wait.until(
             EC.visibility_of_element_located(self.CATEGORY_HEADING)
         )
+    def brands_heading(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(self.BRANDS_HEADING)
+    )
+
+    def click_polo_brand(self):
+        brand_link = self.wait.until(
+            EC.element_to_be_clickable(self.POLO_BRAND)
+        )
+        brand_link.click()
+
+    def click_hm_brand(self):
+        brand_link = self.wait.until(
+            EC.element_to_be_clickable(self.HM_BRAND)
+        )
+        brand_link.click()
+
+    def brand_heading(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.BRAND_HEADING)
+        )
+        
