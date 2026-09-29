@@ -57,7 +57,8 @@ class ProductPage:
     REVIEW_TEXT = (By.CSS_SELECTOR, "#review-form #review")
     REVIEW_SUBMIT = (By.ID, "button-review")
     REVIEW_SUCCESS = (By.CSS_SELECTOR, "#review-section .alert-success span")
-    
+    DOWNLOAD_INVOICE = (By.LINK_TEXT, "Download Invoice")
+
     def __init__(self, driver):
      self.driver = driver
      self.wait = WebDriverWait(driver, 10)
@@ -485,3 +486,9 @@ class ProductPage:
                 By.CSS_SELECTOR, "li:not(.address_title)"
             )
         ]
+
+    def download_invoice(self):
+        button = self.wait.until(
+            EC.element_to_be_clickable(self.DOWNLOAD_INVOICE)
+        )
+        button.click()
