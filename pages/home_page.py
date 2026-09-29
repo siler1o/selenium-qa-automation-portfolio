@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
+from selenium.webdriver.common.action_chains import ActionChains
 
 class HomePage:
 
@@ -12,7 +12,9 @@ class HomePage:
     WOMEN_CATEGORY = (By.CSS_SELECTOR, "a[href='#Women']")
     MEN_CATEGORY = (By.CSS_SELECTOR, "a[href='#Men']")
     KIDS_CATEGORY = (By.CSS_SELECTOR, "a[href='#Kids']")
-
+    RECOMMENDED_HEADING = (By.CSS_SELECTOR,".recommended_items h2.title", )
+    ACTIVE_RECOMMENDED_PRODUCT = (By.CSS_SELECTOR,"#recommended-item-carousel .item.active:not(.left):not(.right) "".productinfo",)
+    ADD_CONFIRMATION = (By.ID, "cartModal")
     WOMEN_TOPS = (
         By.CSS_SELECTOR,
         "a[href='/category_products/2']"
@@ -100,3 +102,57 @@ class HomePage:
         self.wait.until(
             EC.element_to_be_clickable(self.MEN_TSHIRTS)
         ).click()
+
+
+    def scroll_to_recommended_items(self):
+        heading = self.wait.until(
+            EC.visibility_of_element_located(self.RECOMMENDED_HEADING)
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            heading,
+        )
+
+
+    def recommended_heading(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.RECOMMENDED_HEADING)
+        )
+
+
+    def add_recommended_product(self):
+        card = self.wait.until(
+            EC.visibility_of_element_located(
+                self.ACTIVE_RECOMMENDED_PRODUCT
+            )
+        )
+
+        # Hover over the selected recommendation before reading and clicking.
+        ActionChains(self.driver).move_to_element(card).perform()
+
+        button = card.find_element(
+            By.CSS_SELECTOR,
+            "a.add-to-cart[data-product-id]",
+        )
+
+        product = {
+            "id": button.get_attribute("data-product-id"),
+            "name": card.find_element(
+                By.CSS_SELECTOR, "p"
+            ).text.strip(),
+            "price": card.find_element(
+                By.CSS_SELECTOR, "h2"
+            ).text.strip(),
+            "quantity": "1",
+        }
+
+        self.wait.until(
+            EC.element_to_be_clickable(button)
+        ).click()
+
+        self.wait.until(
+            EC.visibility_of_element_located(self.ADD_CONFIRMATION)
+        )
+
+        return product
