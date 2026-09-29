@@ -1,26 +1,28 @@
+![Selenium QA Automation — 26 planned scenarios implemented, Python, Selenium, Pytest and Allure](media/qa-project-banner.svg)
+
 # Selenium QA Automation Portfolio
 
 [![Selenium CI/CD](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/workflows/selenium-ci.yml/badge.svg)](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/workflows/selenium-ci.yml)
 
-A personal UI automation project by **Reuben Silerio**, applying professional manual QA and test-design experience to **Python, Selenium WebDriver, Pytest, Page Object Model (POM), Allure, Git, and GitHub**.
+An automated UI regression suite by **Reuben Silerio**, built with **Python, Selenium WebDriver, Pytest, Page Object Model, Allure, and GitHub Actions**.
 
 The project translates documented scenarios into automated checks against [Automation Exercise](https://automationexercise.com/), with a focus on repeatable execution, meaningful assertions, reusable page objects, explicit synchronization, and clear test evidence.
 
-[View Live Allure Report](https://siler1o.github.io/selenium-qa-automation-portfolio/) · [Test Case Tracker](https://docs.google.com/spreadsheets/d/1E-rbgsHj4jv7pamglMdsREiQnfcl-aHWACqrRmAwD3w/edit?usp=drivesdk) · [Test Scripts](tests/) · [Latest Scenario: TC019](tests/test_TC019_View_Brand_Products.py) · [About Reuben](https://github.com/siler1o)
+[View Live Allure Report](https://siler1o.github.io/selenium-qa-automation-portfolio/) · [Test Case Tracker](https://docs.google.com/spreadsheets/d/1E-rbgsHj4jv7pamglMdsREiQnfcl-aHWACqrRmAwD3w/edit?usp=drivesdk) · [Test Scripts](tests/) · [Latest Scenario: TC026](tests/test_TC026_Scroll_Up_Without_Arrow.py) · [About Reuben](https://github.com/siler1o)
 
 ## Current Snapshot
 
-Snapshot updated: **28 September 2026**.
+**All 26 planned scenarios are implemented** as of 29 September 2026. This completes the scenario roadmap; it does not represent application-wide test coverage.
 
-- **19 automated scenarios out of 26 planned** — 73.1% of the planned scenario list, not application-wide coverage.
-- **Verified CI snapshot:** [28 September 2026 run](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36410035949) — **19 passed in 96.38 seconds**, followed by successful Allure deployment, for commit `9a7396c`.
-- **Automated delivery:** GitHub Actions runs the complete suite in headless Chrome on pushes and pull requests. A successful `main` run generates and deploys a fresh Allure report; failed runs cannot replace the published report.
-- **Test evidence:** Raw Allure results are retained as a workflow artifact for 14 days, including failed runs. See the [CI/CD workflow](.github/workflows/selenium-ci.yml), [workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions), and [live report](https://siler1o.github.io/selenium-qa-automation-portfolio/).
-- Coverage includes registration, authentication, logout, duplicate-email validation, contact-form submission, navigation, product listing, product-detail validation, product search, subscriptions, multi-product cart validation, product-quantity preservation, three order-placement journeys with delivery and billing address checks, cart-item removal, category navigation, and brand-product navigation.
-- All nineteen tests use the shared Chrome fixture and include named Allure steps and metadata.
-- The public Allure report is deployed through GitHub Pages only after the complete CI suite passes on `main`.
+| Evidence | Status |
+| --- | --- |
+| Implemented scenarios | TC001–TC026 |
+| Local execution | All 26 passed, reported by the author on 29 September 2026 |
+| Latest verified CI run | [25 passed, 1 failed in 211 seconds](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36563115293), commit `437fbc5` |
+| CI follow-up | TC016 timed out; Allure deployment was skipped for this run |
+| Reporting | Live workflow badge above; Allure results retained for 14 days |
 
-The documented local environment is Windows with Google Chrome, Python 3.11.4, Pytest 9.1.1, and allure-pytest 2.16.0. CI runs on Ubuntu with Python 3.11 and headless Google Chrome, while Allure CLI 3.16.0 builds the deployment artifact. Each report represents one completed run, not application-wide coverage or a guarantee that future runs will pass.
+The suite exercises account flows, catalog navigation, search, cart operations, checkout, product reviews, invoice downloads, and scrolling. CI runs on Ubuntu with Python 3.11 and headless Chrome. The latest successful report may represent an earlier commit; use the linked workflow run to assess a specific execution.
 
 ## Automated Scenarios
 
@@ -46,43 +48,38 @@ The documented local environment is Windows with Google Chrome, Python 3.11.4, P
 | [TC-018](tests/test_TC018_View_category_products.py) | View category products | Verifies category controls, navigates Women → Tops and Men → Tshirts, validates headings and routes, and confirms products are displayed. |
 | [TC-019](tests/test_TC019_View_Brand_Products.py) | View brand products | Opens Products, verifies the Brands section, navigates Polo and H&M brand pages, validates headings and decoded routes, and confirms products are displayed. |
 
-**Coverage boundaries:** TC-014 through TC-016 verify product name, unit price, and quantity at checkout; checkout line-total and overall order-total assertions remain pending. TC-014's delivery-address check currently omits state and postcode; its billing check includes them. Address checks use normalized text containment rather than exact, field-by-field equality. A passing run covers the assertions implemented in code, not every planned tracker check.
+| [TC-020](tests/test_TC020_Search_Cart_After_Login.py) | Cart persistence after login | Captures all search results, adds them, and compares product IDs, names, prices, and quantities before and after login using a dedicated account. |
+| [TC-021](tests/test_TC021_Add_Product_Review.py) | Product review | Verifies entered review-field values and the submission confirmation. |
+| [TC-022](tests/test_TC022_Add_Recommended_Product.py) | Recommended product | Captures a visible recommendation and checks its ID, name, price, and quantity in the cart. |
+| [TC-023](tests/test_TC023_Verify_Checkout_Addresses.py) | Checkout addresses | Compares complete normalized delivery and billing address lines with registration data, using distinct city, state, and country values. |
+| [TC-024](tests/test_TC024_Download_Invoice.py) | Invoice download | Places an order, waits for a non-empty invoice file with no partial download remaining, and attaches the file to Allure. |
+| [TC-025](tests/test_TC025_Scroll_Up_Arrow.py) | Scroll up with arrow | Verifies the footer is in the viewport, clicks the up-arrow, and checks the top position and banner visibility. |
+| [TC-026](tests/test_TC026_Scroll_Up_Without_Arrow.py) | Scroll up without arrow | Scrolls programmatically and checks the footer, top position, and banner within the viewport. |
+
+**Coverage boundaries:** TC-014 through TC-016 verify product name, unit price, and quantity at checkout; checkout line-total and overall order-total assertions remain pending. TC-014's delivery-address check currently omits state and postcode; its billing check includes them. TC014–TC016 use normalized text containment; TC023–TC024 compare complete normalized address lines. TC020 verifies cart persistence for the returned results, not independent search relevance or completeness. TC021 verifies a confirmation message, not persistent review storage. TC024 verifies file completion and size, not invoice content correctness. A passing run covers the assertions implemented in code, not every planned tracker check.
 
 ## Implementation Highlights
 
-- Refactored TC-001 through TC-007 to use a shared Pytest browser fixture and improved their assertions, naming, synchronization, and reporting.
-- Reused `RegistrationPage` across TC-001 and TC-014 through TC-016, with UUID-based emails, account/address entry, confirmation checks, and successful-flow cleanup.
-- Kept TC-016 independent of TC-002/TC-004 by creating its own account, then explicitly logging out and logging back in before shopping.
-- Compared delivery and billing address text with submitted registration data and captured product names and prices dynamically for the checkout scenarios.
-- Added Allure features, stories, titles, severity levels, and readable step-level reporting to TC-001 through TC-016.
-- Strengthened validations for login, invalid login, logout, existing-email registration, Contact Us, and Test Cases navigation.
-- Made the TC-006 attachment path portable by resolving it from the test file and verifying that the file exists before uploading.
-- Centralized reusable locators and interactions in page objects, including a `ProductPage` reused for catalog, cart, checkout, address, and payment interactions.
-- Used visibility and clickability conditions instead of depending only on fixed timing.
-- Learned to validate a collection of product elements with visibility_of_all_elements_located and len().
-- Added product-detail value checks while normalizing whitespace from Selenium element text.
-- Extended `ProductPage` with search-field, search-button, and result-heading methods for TC-009.
-- Validated search results with a non-empty-list assertion followed by `all()` and `.lower()`. This checks every returned card for the search phrase; it is not a separate test of the search engine's case sensitivity.
-- Added homepage subscription methods in `LoginPage` for TC-010, using JavaScript `scrollIntoView`, explicit waits, and exact confirmation-text validation.
-- Reused the homepage subscription interactions for TC-011 on the Cart page.
-- Added parent-scoped CSS selectors for cart rows and captured listing prices dynamically before validating cart unit prices and totals in TC-012.
-- Added a focused `HomePage` object and reused existing product and cart methods for TC-013.
-- Added input-value validation with `get_attribute("value")` and confirmed that a quantity of 4 is preserved after adding the selected product to the cart.
-- Reduced interference from unrelated third-party advertising by blocking known ad endpoints through Chrome DevTools Protocol in the shared fixture.
-- Added GitHub Actions CI/CD: automated dependency installation, headless-Chrome execution, Allure evidence retention, and gated GitHub Pages deployment after a passing `main` run.
+- **Reusable UI architecture:** page objects own locators, explicit waits, and browser actions; tests own workflow assertions.
+- **Dynamic expectations:** product names, IDs, and prices are captured before cart comparisons, including multi-item checks across login.
+- **Account isolation:** registration and checkout scenarios use UUID emails; TC016 and TC020 create their own login accounts.
+- **Address validation:** TC023 and TC024 compare ordered address lines against distinct registration values.
+- **Download evidence:** TC024 uses an isolated temporary directory, checks download completion, and attaches the invoice to Allure.
+- **Viewport validation:** TC025 and TC026 measure scroll position and element bounds rather than relying only on element visibility.
+- **Automated reporting:** GitHub Actions runs headless Chrome, retains raw results, and gates Allure deployment on a successful main-branch test job.
 
 ## Project Organization
 
 | Location | Responsibility |
 | --- | --- |
 | [tests/](tests/) | Test workflows, expected-result assertions, and Allure steps. |
-| [pages/home_page.py](pages/home_page.py) | Homepage URL verification, product-detail navigation, and product name/price capture. |
+| [pages/home_page.py](pages/home_page.py) | Homepage navigation, product capture, recommendations, category navigation, scrolling, and viewport checks. |
 | [pages/login_page.py](pages/login_page.py) | Login, signup, logout, authentication messages, and subscription interactions. |
 | [pages/registration_page.py](pages/registration_page.py) | Account information, address entry, preferences, account confirmations, signed-in name, and test-account deletion. |
 | [pages/contact_us.py](pages/contact_us.py) | Contact form fields, attachment upload, alert handling, success message, and home navigation. |
 | [pages/navigation_bar.py](pages/navigation_bar.py) | Reusable navigation to Products, Test Cases, and Cart. |
-| [pages/products_page.py](pages/products_page.py) | Product listing, search, quantity input, cart interactions, checkout, delivery/billing address access, payment form entry, and order confirmation. |
-| [conftest.py](conftest.py) | Shared Chrome setup, CI-only headless options, third-party ad-request blocking, and teardown after each test, including assertion failures. |
+| [pages/products_page.py](pages/products_page.py) | Product listing, search, quantity input, cart interactions, checkout, delivery/billing address access, payment form entry, reviews, invoice download, and order confirmation. |
+| [conftest.py](conftest.py) | Shared Chrome setup, CI-only headless options, third-party ad-request blocking, an isolated download-directory fixture, and browser teardown. |
 | [.github/workflows/selenium-ci.yml](.github/workflows/selenium-ci.yml) | GitHub Actions CI/CD pipeline for test execution, Allure artifacts, and gated report deployment. |
 | [test_data/](test_data/) | Sample attachment used by TC-006. |
 | [requirements.txt](requirements.txt) | Python dependencies required by the project. |
@@ -90,12 +87,6 @@ The documented local environment is Windows with Google Chrome, Python 3.11.4, P
 | [.gitignore](.gitignore) | Excludes the virtual environment, caches, and local report output. |
 
 Page objects handle locating and interacting with UI elements. Tests describe the business workflow and evaluate returned elements against expected results.
-
-### Visible Learning Progression
-
-TC-001 has been refactored into reusable page-object interactions with explicit waits, unique account data, Allure steps, and account deletion. The same registration methods now support the checkout scenarios.
-
-TC-002 onward demonstrate the transition toward reusable page objects, explicit waits, clearer assertions, and structured Allure reporting. TC-008 extends that progression with a dedicated product page object, collection handling, and multiple detail validations. TC-009 reuses that object for product search and checks each result against the search phrase. TC-010 adds scrolling to a footer section and distinguishes action methods from methods that return elements for assertions. TC-011 reuses that subscription flow on the Cart page. TC-012 adds multi-product cart interactions, parent-scoped selectors, dynamic price capture, and price, quantity, and total comparisons. TC-013 adds input-value replacement and verification, dynamic product-name capture, and quantity-preservation validation across pages. TC-014 through TC-016 extend this into order-placement journeys with registration at different stages, login setup, address checks, dummy payment entry, and order confirmation. TC-017 adds cart-removal verification, TC-018 adds category navigation and product-collection checks, and TC-019 adds brand navigation with route normalization for encoded brand names.
 
 ## Setup
 
@@ -117,7 +108,7 @@ If PowerShell blocks activation, use ./.venv/Scripts/python.exe instead of pytho
 
 TC-002, TC-004, and TC-005 use a pre-existing practice account specified in the test files. That account must exist for the login and duplicate-email checks to behave as designed. These scenarios do not use the email generated by TC-001.
 
-TC-001 and TC-014 through TC-016 each create a unique practice account and delete it at the end of a successful flow. TC-016 creates its account as setup, logs out, and logs back in using the same saved credentials; it does not reuse or delete TC-002/TC-004's account. Account deletion is not yet guaranteed after an earlier failure, even though browser teardown still runs. Only use dummy data on the practice website.
+TC-001, TC-014 through TC-016, TC-020, TC-023, and TC-024 each create a unique practice account and delete it at the end of a successful flow. TC-016 creates its account as setup, logs out, and logs back in using the same saved credentials; it does not reuse or delete TC-002/TC-004's account. Account deletion is not yet guaranteed after an earlier failure, even though browser teardown still runs. Only use dummy data on the practice website.
 
 TC-008 validates the current first product and its displayed details. TC-009 uses the search phrase `Blue Top` and checks the visible text of each result card. Catalog changes may require the expected data to be updated. The current search test does not yet cover empty searches, no-match results, partial phrases, or search completeness against a separate catalog.
 
@@ -200,7 +191,7 @@ if (-not (Test-Path (Join-Path $qaReportSource "index.html"))) {
 Get-Content (Join-Path $qaReportSource "widgets\statistic.json") -ErrorAction Stop
 ~~~
 
-Compare the displayed totals with the actual Pytest run. The current suite contains 19 scenarios; confirm that all intended tests appear and review any failures before using the report as evidence:
+Compare the displayed totals with the actual Pytest run. The current suite contains 26 scenarios; confirm that all intended tests appear and review any failures before using the report as evidence:
 
 ~~~powershell
 allure.cmd open $qaReportSource
@@ -224,32 +215,21 @@ The [Reuben Selenium Test Case Tracker](https://docs.google.com/spreadsheets/d/1
 
 ## Current Scope and Next Steps
 
-### Implemented
+The TC001–TC026 implementation roadmap is complete. The next phase focuses on reliability, stronger assertions, and maintenance:
 
-- **TC-001 through TC-019:** 19 of the 26 planned scenarios are automated.
-- **Checkout journeys:** register during checkout (TC-014), register before checkout (TC-015), and log in before checkout (TC-016).
-- **Address validation:** delivery and billing sections are checked against submitted registration data. TC-014's delivery state and postcode checks remain to be added.
-- **Independent checkout accounts:** TC-014 through TC-016 use unique emails and delete their own accounts at the end of a successful flow. TC-016 creates an account during setup, logs out, and then exercises login before shopping.
-- **CI/CD and reporting:** GitHub Actions runs the suite in headless Chrome, retains Allure results, and deploys the report after successful main-branch runs. Manual report generation and report commits are optional, not part of the normal publishing workflow.
-
-### Next Scenario
-
-**TC-017 — Remove Products From Cart:** add a product, remove it from the cart, and verify that it is no longer listed. Continue TC-018 through TC-026 afterward.
-
-### Remaining Validation and Framework Improvements
-
-- Add checkout line-total and overall order-total assertions to TC-014 through TC-016. Existing TC-012 cart-total checks do not cover checkout totals.
-- Add delivery state and postcode assertions to TC-014, then strengthen address checks with field-specific comparisons and distinct city/state/country test values.
-- Ensure test-account cleanup runs after failures as well as successful flows.
-- Attach screenshots and browser details to failed Allure results.
-- Move reusable account and address data into shared test-data configuration.
-- Expand search coverage with empty searches, no-match results, and other data variations.
-
-These items remain pending; a passing test run validates the assertions currently implemented, not every planned tracker check.
+- Investigate the TC016 timeout in the latest CI run and verify a complete passing CI execution.
+- Guarantee test-account cleanup after failures.
+- Attach failure screenshots, browser details, and page state to Allure.
+- Add checkout line-total and overall order-total assertions.
+- Extend the stricter address checks to earlier checkout tests.
+- Validate invoice contents and add search edge cases and independent relevance checks.
+- Consolidate repeated account setup and shared test data.
 
 ### Execution Scope
 
-The suite currently targets Chrome against a public practice website. Third-party ad requests are blocked through Chrome DevTools Protocol to reduce interference. Order tests verify the site's UI confirmation using dummy payment data; they do not validate real payment settlement. Browser teardown runs after tests, but an earlier failure can still leave a generated account behind.
+Tests target Chrome against the public Automation Exercise practice application. Dummy payment data validates UI order confirmation, not real payment settlement. The existing account referenced by TC002, TC004, and TC005 must remain available. Generated-account cleanup currently occurs at the end of successful flows.
+
+The Selenium workflow deploys Allure after successful main-branch runs. Configure GitHub Pages to use **GitHub Actions** as its source; the repository also has a separate Pages build workflow in its run history, so its success is not evidence that Selenium tests passed.
 
 ## Acknowledgements
 
