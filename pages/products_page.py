@@ -51,7 +51,13 @@ class ProductPage:
     BRAND_HEADING = (By.CSS_SELECTOR, ".features_items > h2.title")
     CART_ROWS = (By.CSS_SELECTOR, "#cart_info_table tbody tr[id^='product-']")
     CART_MODAL = (By.ID, "cartModal")
-
+    REVIEW_HEADING = (By.CSS_SELECTOR, "a[href='#reviews']")
+    REVIEW_NAME = (By.CSS_SELECTOR, "#review-form #name")
+    REVIEW_EMAIL = (By.CSS_SELECTOR, "#review-form #email")
+    REVIEW_TEXT = (By.CSS_SELECTOR, "#review-form #review")
+    REVIEW_SUBMIT = (By.ID, "button-review")
+    REVIEW_SUCCESS = (By.CSS_SELECTOR, "#review-section .alert-success span")
+    
     def __init__(self, driver):
      self.driver = driver
      self.wait = WebDriverWait(driver, 10)
@@ -422,3 +428,43 @@ class ProductPage:
             })
 
         return products
+
+    def review_heading(self):
+        return self.wait.until(
+        EC.visibility_of_element_located(self.REVIEW_HEADING)
+    )
+
+
+    def fill_review(self, *, name, email, review):
+        self._type(self.REVIEW_NAME, name)
+        self._type(self.REVIEW_EMAIL, email)
+        self._type(self.REVIEW_TEXT, review)
+
+
+    def review_field_values(self):
+        values = {}
+
+        for field_name, locator in (
+            ("name", self.REVIEW_NAME),
+            ("email", self.REVIEW_EMAIL),
+            ("review", self.REVIEW_TEXT),
+        ):
+            field = self.wait.until(
+                EC.visibility_of_element_located(locator)
+            )
+            values[field_name] = field.get_attribute("value")
+
+        return values
+
+
+    def submit_review(self):
+        button = self.wait.until(
+            EC.element_to_be_clickable(self.REVIEW_SUBMIT)
+        )
+        button.click()
+
+
+    def review_success_message(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.REVIEW_SUCCESS)
+        )
