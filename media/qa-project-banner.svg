@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+<title id="title">Selenium QA Automation — 26 scenarios</title>
+<desc id="desc">Python, Selenium, Pytest and Allure with GitHub Actions.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0c182b"/><stop offset="1" stop-color="#152f43"/></linearGradient></defs>
+<rect width="1200" height="360" rx="18" fill="url(#bg)"/>
+<path d="M870 0 L690 360 M1000 0 L820 360 M1130 0 L950 360" stroke="#244458" stroke-width="1"/>
+<rect x="48" y="48" width="5" height="218" rx="2" fill="#42dfc4"/>
+<g font-family="DejaVu Sans, Arial, sans-serif">
+<text x="76" y="72" fill="#42dfc4" font-size="15" letter-spacing="3">QUALITY ASSURANCE / ENGINEERING PORTFOLIO</text>
+<text x="74" y="135" fill="#f4f8fc" font-size="40" font-weight="700">Selenium QA Automation</text>
+<text x="76" y="178" fill="#c6d8e5" font-size="21">26 scenarios. Reusable page objects. Automated reporting.</text>
+<text x="76" y="225" fill="#90adbf" font-size="17">Python · Selenium · Pytest · Allure · GitHub Actions</text>
+<line x1="76" y1="257" x2="1124" y2="257" stroke="#345164"/>
+<text x="76" y="306" fill="#f4f8fc" font-size="18" font-weight="700">26 / 26 planned scenarios</text>
+<text x="455" y="306" fill="#f4f8fc" font-size="18" font-weight="700">Headless Chrome CI</text>
+<text x="905" y="306" fill="#42dfc4" font-size="18" font-weight="700">Allure reports</text>
+</g>
+<g transform="translate(1040 93)" fill="none" stroke="#42dfc4" stroke-width="4"><rect width="80" height="80" rx="20" fill="#142d40"/><path d="M21 41 l14 14 27-31"/></g>
+</svg>
