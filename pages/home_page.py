@@ -23,7 +23,18 @@ class HomePage:
         By.CSS_SELECTOR,
         "a[href='/category_products/3']"
     )
+    SUBSCRIPTION_HEADING = (
+    By.XPATH,
+    "//footer//h2[normalize-space()='Subscription']",
+    )
 
+    SCROLL_UP_ARROW = (By.ID, "scrollUp")
+
+    HOME_BANNER_TEXT = (
+        By.XPATH,
+        "//h2[normalize-space()='Full-Fledged practice website "
+        "for Automation Engineers']",
+    )
 
     def __init__(self, driver):
         self.driver = driver
@@ -156,3 +167,64 @@ class HomePage:
         )
 
         return product
+
+    def scroll_to_bottom(self):
+        self.driver.execute_script(
+            "window.scrollTo(0, document.documentElement.scrollHeight);"
+        )
+
+    def scroll_position(self):
+        return self.driver.execute_script("return window.scrollY;")
+
+
+    def is_in_viewport(self, element):
+        return element.is_displayed() and self.driver.execute_script(
+            """
+            const rect = arguments[0].getBoundingClientRect();
+            return rect.width > 0 &&
+                rect.height > 0 &&
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= window.innerHeight &&
+                rect.right <= window.innerWidth;
+            """,
+            element,
+        )
+
+
+    def subscription_heading_in_view(self):
+        def find_heading(driver):
+            for heading in driver.find_elements(*self.SUBSCRIPTION_HEADING):
+                if self.is_in_viewport(heading):
+                    return heading
+            return False
+
+        return self.wait.until(
+            find_heading,
+            message="Subscription heading did not appear in the viewport",
+        )
+
+
+    def click_scroll_up_arrow(self):
+        arrow = self.wait.until(
+            EC.element_to_be_clickable(self.SCROLL_UP_ARROW)
+        )
+        arrow.click()
+
+        self.wait.until(
+            lambda driver: driver.execute_script("return window.scrollY;") <= 1,
+            message="The up-arrow did not return the page to the top",
+        )
+
+
+    def home_banner_in_view(self):
+        def find_banner(driver):
+            for heading in driver.find_elements(*self.HOME_BANNER_TEXT):
+                if self.is_in_viewport(heading):
+                    return heading
+            return False
+
+        return self.wait.until(
+            find_banner,
+            message="The homepage banner text did not appear in the viewport",
+        )
