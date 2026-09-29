@@ -228,3 +228,12 @@ class HomePage:
             find_banner,
             message="The homepage banner text did not appear in the viewport",
         )
+    def scroll_to_top(self):
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
+        self.wait.until(
+            lambda driver: driver.execute_script(
+                "return window.scrollY;"
+            ) <= 1,
+            message="The page did not return to the top",
+        )
