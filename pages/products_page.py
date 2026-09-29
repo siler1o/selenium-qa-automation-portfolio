@@ -49,7 +49,9 @@ class ProductPage:
     POLO_BRAND = (By.CSS_SELECTOR, "a[href='/brand_products/Polo']")
     HM_BRAND = (By.CSS_SELECTOR, "a[href='/brand_products/H&M']")
     BRAND_HEADING = (By.CSS_SELECTOR, ".features_items > h2.title")
-    
+    CART_ROWS = (By.CSS_SELECTOR, "#cart_info_table tbody tr[id^='product-']")
+    CART_MODAL = (By.ID, "cartModal")
+
     def __init__(self, driver):
      self.driver = driver
      self.wait = WebDriverWait(driver, 10)
@@ -354,4 +356,69 @@ class ProductPage:
         return self.wait.until(
             EC.visibility_of_element_located(self.BRAND_HEADING)
         )
-        
+
+    def searched_product_details(self):
+        products = []
+
+        for card in self.product_list():
+            product_id = card.find_element(
+            By.CSS_SELECTOR, "a[data-product-id]"
+        ).get_attribute("data-product-id")
+
+            products.append({
+            "id": product_id,
+            "name": card.find_element(By.CSS_SELECTOR, "p").text.strip(),
+            "price": card.find_element(By.CSS_SELECTOR, "h2").text.strip(),
+            "quantity": "1",
+        })
+
+        return products
+
+
+    def add_product_by_id(self, product_id):
+        locator = (
+            By.CSS_SELECTOR,
+            f".productinfo a[data-product-id='{product_id}']",
+        )
+
+        self.wait.until(
+            EC.invisibility_of_element_located(self.CART_MODAL)
+        )
+
+        button = self.wait.until(
+            EC.element_to_be_clickable(locator)
+        )
+        button.click()
+
+        self.wait.until(
+            EC.visibility_of_element_located(self.CART_MODAL)
+        )
+        self.continue_shopping()
+
+        self.wait.until(
+            EC.invisibility_of_element_located(self.CART_MODAL)
+        )
+
+
+    def cart_product_details(self):
+        rows = self.wait.until(
+            EC.visibility_of_all_elements_located(self.CART_ROWS)
+        )
+
+        products = []
+
+        for row in rows:
+            products.append({
+                "id": row.get_attribute("id").removeprefix("product-"),
+                "name": row.find_element(
+                    By.CSS_SELECTOR, ".cart_description h4 a"
+                ).text.strip(),
+                "price": row.find_element(
+                    By.CSS_SELECTOR, ".cart_price p"
+                ).text.strip(),
+                "quantity": row.find_element(
+                    By.CSS_SELECTOR, ".cart_quantity button"
+                ).text.strip(),
+            })
+
+        return products
