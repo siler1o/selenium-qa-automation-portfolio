@@ -468,3 +468,20 @@ class ProductPage:
         return self.wait.until(
             EC.visibility_of_element_located(self.REVIEW_SUCCESS)
         )
+    def delivery_address_lines(self):
+        container = self.delivery_address()
+        return [
+            " ".join(line.text.split())
+            for line in container.find_elements(
+                By.CSS_SELECTOR, "li:not(.address_title)"
+            )
+        ]
+
+    def billing_address_lines(self):
+        container = self.billing_address()
+        return [
+            " ".join(line.text.split())
+            for line in container.find_elements(
+                By.CSS_SELECTOR, "li:not(.address_title)"
+            )
+        ]
