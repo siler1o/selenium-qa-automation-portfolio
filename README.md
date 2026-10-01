@@ -10,7 +10,7 @@ The project translates documented scenarios into automated checks against [Autom
 
 [View Live Allure Report](https://siler1o.github.io/selenium-qa-automation-portfolio/) · [Test Case Tracker](https://docs.google.com/spreadsheets/d/1E-rbgsHj4jv7pamglMdsREiQnfcl-aHWACqrRmAwD3w/edit?usp=drivesdk) · [Test Scripts](tests/) · [Latest Scenario: TC026](tests/test_TC026_Scroll_Up_Without_Arrow.py) · [About Reuben](https://github.com/siler1o)
 
-## Current Snapshot
+## Coverage and Verified CI Snapshot
 
 **All 26 planned scenarios are implemented** as of 29 September 2026. This completes the scenario roadmap; it does not represent application-wide test coverage.
 
@@ -18,11 +18,13 @@ The project translates documented scenarios into automated checks against [Autom
 | --- | --- |
 | Implemented scenarios | TC001–TC026 |
 | Local execution | All 26 passed, reported by the author on 29 September 2026 |
-| Latest verified CI run | [25 passed, 1 failed in 211 seconds](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36563115293), commit `437fbc5` |
-| CI follow-up | TC016 timed out; Allure deployment was skipped for this run |
+| Verified CI execution | [26 passed in 142.35 seconds](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/runs/36897542904), commit `62398b5` — 2 October 2026 (PHT) |
+| Report deployment | Allure generation and GitHub Pages deployment succeeded in the linked run |
 | Reporting | Live workflow badge above; Allure results retained for 14 days |
 
-The suite exercises account flows, catalog navigation, search, cart operations, checkout, product reviews, invoice downloads, and scrolling. CI runs on Ubuntu with Python 3.11 and headless Chrome. The latest successful report may represent an earlier commit; use the linked workflow run to assess a specific execution.
+The linked run confirms that all 26 tests passed, including TC016. This is a dated execution snapshot; use the live badge and [workflow history](https://github.com/siler1o/selenium-qa-automation-portfolio/actions/workflows/selenium-ci.yml) for subsequent results. The published Allure report reflects the most recent successful deployment.
+
+The suite exercises account flows, catalog navigation, search, cart operations, checkout, product reviews, invoice downloads, and scrolling. CI runs on Ubuntu with Python 3.11 and headless Chrome.
 
 ## Automated Scenarios
 
@@ -47,7 +49,6 @@ The suite exercises account flows, catalog navigation, search, cart operations, 
 | [TC-017](tests/test_TC017_Remove_products.py) | Remove products from cart | Adds the first product, verifies its name, price, quantity and cart route, removes it, and confirms the empty-cart message. |
 | [TC-018](tests/test_TC018_View_category_products.py) | View category products | Verifies category controls, navigates Women → Tops and Men → Tshirts, validates headings and routes, and confirms products are displayed. |
 | [TC-019](tests/test_TC019_View_Brand_Products.py) | View brand products | Opens Products, verifies the Brands section, navigates Polo and H&M brand pages, validates headings and decoded routes, and confirms products are displayed. |
-
 | [TC-020](tests/test_TC020_Search_Cart_After_Login.py) | Cart persistence after login | Captures all search results, adds them, and compares product IDs, names, prices, and quantities before and after login using a dedicated account. |
 | [TC-021](tests/test_TC021_Add_Product_Review.py) | Product review | Verifies entered review-field values and the submission confirmation. |
 | [TC-022](tests/test_TC022_Add_Recommended_Product.py) | Recommended product | Captures a visible recommendation and checks its ID, name, price, and quantity in the cart. |
@@ -217,7 +218,7 @@ The [Reuben Selenium Test Case Tracker](https://docs.google.com/spreadsheets/d/1
 
 The TC001–TC026 implementation roadmap is complete. The next phase focuses on reliability, stronger assertions, and maintenance:
 
-- Investigate the TC016 timeout in the latest CI run and verify a complete passing CI execution.
+- Monitor CI reliability and investigate any recurring timeouts or practice-site availability issues.
 - Guarantee test-account cleanup after failures.
 - Attach failure screenshots, browser details, and page state to Allure.
 - Add checkout line-total and overall order-total assertions.
