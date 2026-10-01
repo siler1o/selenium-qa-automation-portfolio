@@ -1,4 +1,4 @@
-![Selenium QA Automation — 26 planned scenarios implemented, Python, Selenium, Pytest and Allure](media/qa-project-banner.svg)
+![Selenium + Python — Pytest, Page Objects, Allure reports, and GitHub Actions](media/selenium-python-banner.png)
 
 # Selenium QA Automation Portfolio
 
